@@ -4,7 +4,7 @@
 
 :root {
   --swiper-theme-color: #222 !important;
-  --swiper-navigation-size: 30px !important;
+  --swiper-navigation-size: 25px !important;
 }
 
 @media (max-width:768px) {
