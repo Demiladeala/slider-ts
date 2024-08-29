@@ -72,6 +72,7 @@ export const Slider = () => {
                                 alt={`Slide ${index}`}
                                 loading="lazy"
                                 className="w-full h-full object-cover rounded"
+                                sizes="(max-width: 600px) 480px, (max-width: 1200px) 800px, 1000px"
                             />
                         </div>
                         {index === activeIndex && (
@@ -106,11 +107,12 @@ export const Slider = () => {
                 {images.map((image, index) => (
                     <SwiperSlide key={index} className="relative group cursor-pointer">
                         <Image
-                            width={1000}
-                            height={1000}
+                            width={300}
+                            height={300}
                             src={image}
                             alt={`Thumbnail ${index}`}
                             loading="lazy"
+                            sizes="(max-width: 600px) 480px, (max-width: 1200px) 800px, 1500px"
                             className={`w-full h-full object-cover ${
                                 index === activeIndex ? 'border-2 border-white' : ''
                             }`}
@@ -133,6 +135,7 @@ export const Slider = () => {
                         src={images[activeIndex]}
                         alt={`Slide ${activeIndex}`}
                         className="w-full h-full object-cover"
+                        loading='lazy'
                         style={{ transform: `scale(${zoomScale})` }}
                     />
                     <div className="absolute top-4 left-4 text-gray-800">
