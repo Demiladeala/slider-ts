@@ -66,10 +66,11 @@ export const Slider = () => {
                             style={{ transition: 'transform 0.3s ease-in-out' }}
                         >
                             <Image
-                                width={1500}
-                                height={1500}
+                                width={1000}
+                                height={1000}
                                 src={image}
                                 alt={`Slide ${index}`}
+                                loading="lazy"
                                 className="w-full h-full object-cover rounded"
                             />
                         </div>
@@ -104,9 +105,12 @@ export const Slider = () => {
             >
                 {images.map((image, index) => (
                     <SwiperSlide key={index} className="relative group cursor-pointer">
-                        <img
+                        <Image
+                            width={1000}
+                            height={1000}
                             src={image}
                             alt={`Thumbnail ${index}`}
+                            loading="lazy"
                             className={`w-full h-full object-cover ${
                                 index === activeIndex ? 'border-2 border-white' : ''
                             }`}
