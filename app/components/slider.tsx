@@ -127,34 +127,36 @@ export const Slider = () => {
 
         {/* Fullscreen Overlay */}
         {isFullScreen && (
-            <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center p-4">
-                <div className="relative w-full max-w-5xl h-[80vh] bg-black">
+            <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center md:p-4">
+                <div className={`md:relative w-full md:max-w-5xl md:h-[80vh] bg-black
+                    ${zoomScale === 1.5 ? "h-full" : "h-[50vh]"}`}>
                     <Image
                         width={1500}
                         height={1500}
                         src={images[activeIndex]}
                         alt={`Slide ${activeIndex}`}
-                        className="w-full h-full object-cover"
+                        className={`w-full h-full 
+                        ${zoomScale === 1.5 ? "object-contain" : "object-cover"}`}
                         loading='lazy'
                         style={{ transform: `scale(${zoomScale})` }}
                     />
-                    <div className="absolute top-4 left-4 text-gray-800">
+                    <div className="absolute top-4 left-4 text-gray-50 md:text-gray-800">
                         {activeIndex + 1}/{images.length}
                     </div>
-                    <div className="absolute top-4 right-4 flex space-x-4 text-gray-800">
+                    <div className="absolute top-4 right-4 flex space-x-4 text-gray-50 md:text-gray-800">
                         {/* <BiSolidZoomIn size={20} /> */}
                         <MdOutlineFullscreen size={20} onClick={handleZoom}  className='cursor-pointer'/>
                         {/* <IoIosShareAlt size={20} /> */}
                         <VscClose size={20} onClick={handleFullScreen} className="cursor-pointer" />
                     </div>
-                    <div className="absolute left-4 bottom-4 text-gray-800">
+                    <div className="absolute left-4 bottom-4 text-gray-50 md:text-gray-800">
                         <button
                             onClick={() => setActiveIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
                         >
                             Prev
                         </button>
                     </div>
-                    <div className="absolute right-4 bottom-4 text-gray-800">
+                    <div className="absolute right-4 bottom-4 text-gray-50 md:text-gray-800">
                         <button
                             onClick={() => setActiveIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
                         >
