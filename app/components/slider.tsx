@@ -52,12 +52,12 @@ export const Slider = () => {
             <Swiper
                 modules={[Navigation, Thumbs]}
                 thumbs={{ swiper: thumbsSwiper }}
-                className="mb-4 w-full h-[450px] md:h-[600px] border rounded"
+                className="mb-4 w-full h-[450px] md:h-[600px] border rounded swiper-container"
                 navigation
                 onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
             >
                 {images.map((image, index) => (
-                    <SwiperSlide key={index} className='w-full h-full cursor-pointer'>
+                    <SwiperSlide key={index} className='w-full h-full cursor-pointer swiper-slide'>
                         <div 
                             className="w-full h-full overflow-hidden relative"
                             onMouseMove={handleMouseMove}
@@ -102,10 +102,10 @@ export const Slider = () => {
                 watchSlidesProgress={true}
                 modules={[Navigation, Thumbs]}
                 navigation
-                className="h-24 md:h-28"
+                className="h-24 md:h-28 swiper-container"
             >
                 {images.map((image, index) => (
-                    <SwiperSlide key={index} className="relative group cursor-pointer">
+                    <SwiperSlide key={index} className="relative group cursor-pointer swiper-slide">
                         <Image
                             width={300}
                             height={300}

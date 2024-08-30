@@ -7,8 +7,29 @@
   --swiper-navigation-size: 25px !important;
 }
 
+/* Hide arrows by default */
+.swiper-button-prev,
+.swiper-button-next {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Show arrows on hover */
+.swiper-container:hover .swiper-button-prev,
+.swiper-container:hover .swiper-button-next,
+.swiper-slide:hover .swiper-button-prev,
+.swiper-slide:hover .swiper-button-next {
+    opacity: 1;
+}
+
+
 @media (max-width:768px) {
   :root {
     --swiper-navigation-size: 20px !important;
   }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    opacity: 1;
+}
 }
