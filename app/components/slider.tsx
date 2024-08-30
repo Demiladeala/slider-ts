@@ -4,14 +4,14 @@ import { Navigation, Thumbs } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 import Image from 'next/image';
 import { SlSizeFullscreen } from 'react-icons/sl';
-import { BiSolidZoomIn } from 'react-icons/bi';
 import { VscClose } from 'react-icons/vsc';
 import { MdOutlineFullscreen } from 'react-icons/md';
-import { IoIosShareAlt } from 'react-icons/io';
+import { BiSolidZoomIn } from 'react-icons/bi';
+import { AiOutlineZoomIn } from 'react-icons/ai';
 
 const images = [
     "/img-1.png",
@@ -26,12 +26,54 @@ const images = [
 export const Slider = () => {
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [isMiniFullScreen, setIsMiniFullScreen] = useState(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [showFullText, setShowFullText] = useState(false);
     const [zoomScale, setZoomScale] = useState(1);
+    const sliderRef = useRef<HTMLDivElement>(null);
 
     const handleFullScreen = () => {
-        setIsFullScreen(!isFullScreen);
+        setIsMiniFullScreen(!isMiniFullScreen);
+    };
+
+    useEffect(() => {
+        const handleKeydown = (event: KeyboardEvent) => {
+            if (event.key === "Escape" && isFullScreen) {
+                exitFullScreen();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeydown);
+        return () => {
+            document.removeEventListener("keydown", handleKeydown);
+        };
+    }, [isFullScreen]);
+
+    const enterFullScreen = () => {
+        if (sliderRef.current && !isFullScreen) {
+            sliderRef.current.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+            });
+            setIsFullScreen(true);
+        }
+    };
+    
+    const exitFullScreen = () => {
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch(err => {
+                console.error(`Error attempting to exit full-screen mode: ${err.message}`);
+            });
+        }
+        setIsFullScreen(false);
+    };
+    
+
+    const handleFullViewScreen = () => {
+        if (isFullScreen) {
+            exitFullScreen();
+        } else {
+            enterFullScreen();
+        }
     };
 
     const handleZoom = () => {
@@ -126,43 +168,55 @@ export const Slider = () => {
         </div>
 
         {/* Fullscreen Overlay */}
-        {isFullScreen && (
-            <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center md:p-4">
-                <div className={`md:relative w-full md:max-w-5xl md:h-[80vh] bg-black
-                    ${zoomScale === 1.5 ? "h-full" : "h-[50vh]"}`}>
+        {isMiniFullScreen && (
+            <div 
+            ref={sliderRef}
+            className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center md:p-4">
+                {zoomScale === 1 && <div className="z-[1] absolute inset-0"
+                onClick={handleFullScreen}></div>}
+
+                <div className={`absolute top-4 left-4 text-gray-50
+                    ${zoomScale === 1 ? "z-[2]" : "z-[3]"}`}>
+                    {activeIndex + 1}/{images.length}
+                </div>
+                <div className={`absolute top-4 right-4 flex space-x-4 text-gray-50
+                    ${zoomScale === 1 ? "z-[2]" : "z-[3]"}`}>
+                    <AiOutlineZoomIn size={20} onClick={handleZoom} className='cursor-pointer'/>
+                    <MdOutlineFullscreen size={20} onClick={handleFullViewScreen}  className='cursor-pointer'/>
+                    {/* <IoIosShareAlt size={20} /> */}
+                    <VscClose size={20} onClick={handleFullScreen} className="cursor-pointer" />
+                </div>
+                <div className={`absolute left-4 bottom-4 text-gray-50
+                    ${zoomScale === 1 ? "z-[2]" : "z-[3]"}`}>
+                    <button
+                        onClick={() => setActiveIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
+                    >
+                        Prev
+                    </button>
+                </div>
+                <div className={`absolute right-4 bottom-4 text-gray-50
+                     ${zoomScale === 1 ? "z-[2]" : "z-[3]"}`}>
+                    <button
+                        onClick={() => setActiveIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
+                    >
+                        Next
+                    </button>
+                </div>
+
+                <div className={`z-[2] relative w-full bg-black
+                    ${zoomScale === 1.5 ? "h-full md:h-full" : "h-[50vh] md:h-[90vh] md:w-[50%]"}`}>
                     <Image
                         width={1500}
                         height={1500}
                         src={images[activeIndex]}
                         alt={`Slide ${activeIndex}`}
-                        className={`w-full h-full 
+                        onClick={handleZoom}
+                        className={`w-full h-full cursor-zoom-in transition-transform duration-300
                         ${zoomScale === 1.5 ? "object-contain" : "object-cover"}`}
                         loading='lazy'
                         style={{ transform: `scale(${zoomScale})` }}
                     />
-                    <div className="absolute top-4 left-4 text-gray-50 md:text-gray-800">
-                        {activeIndex + 1}/{images.length}
-                    </div>
-                    <div className="absolute top-4 right-4 flex space-x-4 text-gray-50 md:text-gray-800">
-                        {/* <BiSolidZoomIn size={20} /> */}
-                        <MdOutlineFullscreen size={20} onClick={handleZoom}  className='cursor-pointer'/>
-                        {/* <IoIosShareAlt size={20} /> */}
-                        <VscClose size={20} onClick={handleFullScreen} className="cursor-pointer" />
-                    </div>
-                    <div className="absolute left-4 bottom-4 text-gray-50 md:text-gray-800">
-                        <button
-                            onClick={() => setActiveIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
-                        >
-                            Prev
-                        </button>
-                    </div>
-                    <div className="absolute right-4 bottom-4 text-gray-50 md:text-gray-800">
-                        <button
-                            onClick={() => setActiveIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
-                        >
-                            Next
-                        </button>
-                    </div>
+                   
                 </div>
             </div>
         )}
